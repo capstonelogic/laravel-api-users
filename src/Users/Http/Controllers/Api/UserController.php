@@ -1,21 +1,32 @@
 <?php
 
-namespace CapstoneLogic\Api\Http\Controllers;
+namespace CapstoneLogic\Users\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use Woodoocoder\LaravelHelpers\Api\Controller;
+use Woodoocoder\LaravelHelpers\Api\Response\ApiMessage;
+use Woodoocoder\LaravelHelpers\Api\Response\ApiStatus;
+
+use CapstoneLogic\Auth\Resource\UserResource;
+use CapstoneLogic\Auth\Model\User;
+use CapstoneLogic\Users\Repository\UserRepository;
 
 class UserController extends Controller
 {
+
+    private $usersRepo;
+    public function __construct(UserRepository $usersRepo) {
+        $this->usersRepo = $usersRepo;
+    }
 
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        return UserResource::collection($this->usersRepo->paginate());
     }
 
     /**
@@ -26,7 +37,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return new UserResource($this->usersRepo->create($request->all()));
     }
 
     /**
@@ -35,9 +46,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $user)
     {
-        //
+        return new UserResource($user);
     }
 
     /**
@@ -47,9 +58,17 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        //
+        $isUpdated = $this->usersRepo->update($request->all(), $user->id);
+        
+        if($isUpdated) {
+            $user = $this->usersRepo->find($user->id);
+            return new UserResource($user);
+        }
+        else {
+            return new UserResource($user, ApiStatus::ERROR);
+        }
     }
 
     /**
@@ -58,8 +77,13 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        //
+        if($user->delete()) {
+            return new ApiMessage();
+        }
+        else {
+            return new ApiMessage(ApiStatus::ERROR);
+        }
     }
 }

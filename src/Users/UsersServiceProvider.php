@@ -2,6 +2,9 @@
 
 namespace CapstoneLogic\Users;
 
+use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Route;
+
 class UsersServiceProvider extends ServiceProvider
 {
     /**
@@ -27,9 +30,9 @@ class UsersServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        Route::prefix('api/users')
+        Route::prefix('api')
             ->middleware('api')
             ->namespace('CapstoneLogic\Users')
-            ->group(__DIR__ . '/../../routes/api.php');
+            ->group(__DIR__ . '/../routes/api.php');
     }
 }
