@@ -10,6 +10,8 @@ use Woodoocoder\LaravelHelpers\Api\Response\ApiStatus;
 use CapstoneLogic\Auth\Resource\UserResource;
 use CapstoneLogic\Auth\Model\User;
 use CapstoneLogic\Users\Repository\UserRepository;
+use CapstoneLogic\Users\Http\Request\CreateRequest;
+use CapstoneLogic\Users\Http\Request\UpdateRequest;
 
 class UserController extends Controller
 {
@@ -35,7 +37,7 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateRequest $request)
     {
         return new UserResource($this->usersRepo->create($request->all()));
     }
@@ -58,7 +60,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(UpdateRequest $request, User $user)
     {
         $isUpdated = $this->usersRepo->update($request->all(), $user->id);
         
