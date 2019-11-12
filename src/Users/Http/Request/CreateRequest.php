@@ -20,10 +20,10 @@ class CreateRequest extends FormRequest {
      */
     public function rules() {
         return [
-            'username' => 'string|unique:users',
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
             'email' => 'required|string|email|unique:users',
-            'password' => 'required|string',
-            'remember_me' => 'boolean'
+            'password' => 'required|string'
         ];
     }
 }
