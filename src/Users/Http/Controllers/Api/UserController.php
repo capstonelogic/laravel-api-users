@@ -10,6 +10,7 @@ use Woodoocoder\LaravelHelpers\Api\Response\ApiStatus;
 use CapstoneLogic\Auth\Resource\UserResource;
 use CapstoneLogic\Auth\Model\User;
 use CapstoneLogic\Users\Repository\UserRepository;
+use CapstoneLogic\Users\Http\Request\SearchRequest;
 use CapstoneLogic\Users\Http\Request\CreateRequest;
 use CapstoneLogic\Users\Http\Request\UpdateRequest;
 
@@ -26,9 +27,26 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(SearchRequest $request)
     {
-        return UserResource::collection($this->usersRepo->paginate());
+        $data = $request->all();
+
+        $params = [];
+        if(isset($data['per_page'])) {
+            $params[] = $data['per_page']<=20 ? $data['per_page'] : 20;
+        }
+        if(isset($data['order_by'])) {
+            $params[] = $data['order_by'];
+        }
+        if(isset($data['sort'])) {
+            $params[] = $data['sort'];
+        }
+        if(isset($data['search'])) {
+            $params[] = $data['search'];
+        }
+        $users = $this->usersRepo->search(...$params);
+        
+        return UserResource::collection($users);
     }
 
     /**
