@@ -23,7 +23,7 @@ class SearchRequest extends FormRequest {
             'per_page' => 'integer',
             'order_by' => 'string',
             'sort' => 'string',
-            'search' => 'string'
+            'search' => 'nullable|string'
         ];
     }
 }
